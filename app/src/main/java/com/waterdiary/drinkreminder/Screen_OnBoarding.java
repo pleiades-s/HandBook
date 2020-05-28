@@ -40,7 +40,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
     AppCompatTextView lbl_next;
 
     int current_page_idx=0;
-    int max_page=7;
+    int max_page=5;
 
     private static final int ALL_PERMISSION = 3;
 
@@ -58,7 +58,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
         Body();
     }
 
-    public  void FindViewById()
+    public void FindViewById()
     {
         viewPager=findViewById(R.id.viewPager);
         dots_indicator=findViewById(R.id.dots_indicator);
@@ -112,7 +112,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
             public void onPageScrollStateChanged(int state) { }
         });
 
-        viewPager.setOffscreenPageLimit(10);
+        viewPager.setOffscreenPageLimit(4);
 
         dots_indicator.setViewPager(viewPager);
 
@@ -132,7 +132,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
             public void onClick(View view)
             {
                 //ah.customAlert(""+ph.getString(URLFactory.USER_NAME));
-
+/*
                 if(current_page_idx==0)
                 {
                     if(sh.check_blank_data(ph.getString(URLFactory.USER_NAME))) {
@@ -144,8 +144,8 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
                         ah.customAlert(sh.get_string(R.string.str_valid_name_validation));
                         return;
                     }
-                }
-                if(current_page_idx==1)
+                }*/
+                /*if(current_page_idx==1)
                 {
                     try
                     {
@@ -182,9 +182,9 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
                         ah.customAlert(sh.get_string(R.string.str_your_name_validation));
                         return;
                     }*/
-                }
+                //}
 
-                if(current_page_idx==5)
+                /*if(current_page_idx==5)
                 {
                     if(sh.check_blank_data(ph.getString(URLFactory.WAKE_UP_TIME)) || sh.check_blank_data(ph.getString(URLFactory.BED_TIME)))
                     {
@@ -198,7 +198,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
                     }
 
                     //setAlarm();
-                }
+                }*/
 
                 if(current_page_idx<max_page-1) {
                     current_page_idx += 1;
@@ -216,7 +216,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
         });
     }
 
-    public boolean isNextDayEnd()
+    /*public boolean isNextDayEnd()
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm a");
 
@@ -361,7 +361,7 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
             dh.REMOVE("tbl_alarm_sub_details");
         }
     }
-
+*/
     public void checkStoragePermissions()
     {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -399,9 +399,9 @@ public class Screen_OnBoarding extends MasterBaseAppCompatActivity
     {
         ph.savePreferences(URLFactory.HIDE_WELCOME_SCREEN,true);
 
-        setAlarm();
+        //setAlarm();
 
-        intent=new Intent(act,Screen_Dashboard.class);
+        intent=new Intent(act,handbook_start.class);
         startActivity(intent);
         finish();
 
