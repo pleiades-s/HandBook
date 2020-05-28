@@ -1,0 +1,50 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.basic.appbasiclibs"
+4    android:versionCode="1"
+5    android:versionName="1.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+8-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="27" />
+9-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml
+10
+11    <uses-permission android:name="android.permission.INTERNET" />
+11-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:4:5-67
+11-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:4:22-64
+12    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+12-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:5:5-79
+12-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:5:22-77
+13    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+13-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:6:5-80
+13-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:6:22-78
+14    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+14-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:7:5-81
+14-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:7:22-78
+15    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+15-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:8:5-78
+15-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:8:22-76
+16    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+16-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:9:5-75
+16-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:9:22-73
+17
+18    <application>
+18-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:11:5-18:19
+19        <activity
+19-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:12:9-13:51
+20            android:name="com.basic.appbasiclibs.Screen_Error_Report"
+20-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:12:19-54
+21            android:screenOrientation="portrait" />
+21-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:13:13-49
+22        <activity
+22-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:15:9-17:51
+23            android:name="com.basic.appbasiclibs.AppClose"
+23-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:15:19-43
+24            android:autoRemoveFromRecents="true"
+24-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:17:13-49
+25            android:theme="@android:style/Theme.NoDisplay" />
+25-->C:\Users\rudob\AndroidStudioProjects\HandBook\appbasiclibs\src\main\AndroidManifest.xml:16:13-59
+26    </application>
+27
+28</manifest>

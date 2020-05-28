@@ -1,0 +1,7 @@
+R_DEF: Internal format may change without notice
+local
+attr? dividerSize
+attr horizontalPickerStyle
+attr? sideItems
+attr? values
+styleable HorizontalPicker android:textColor android:textSize values android:ellipsize android:marqueeRepeatLimit dividerSize sideItems

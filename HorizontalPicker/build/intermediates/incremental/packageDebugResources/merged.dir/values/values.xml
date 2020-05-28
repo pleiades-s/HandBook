@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr format="reference" name="horizontalPickerStyle"/>
+    <declare-styleable name="HorizontalPicker">
+        <attr name="android:textColor"/>
+        <attr name="android:textSize"/>
+        <attr format="reference" name="values"/>
+        <attr name="android:ellipsize"/>
+        <attr name="android:marqueeRepeatLimit"/>
+        <attr format="dimension" name="dividerSize"/>
+        <attr format="integer" name="sideItems"/>
+    </declare-styleable>
+</resources>
