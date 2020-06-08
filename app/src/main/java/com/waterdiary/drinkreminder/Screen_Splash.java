@@ -28,6 +28,9 @@ public class Screen_Splash extends MasterBaseAppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.screen_splash);
 
+//        Intent intent = new Intent(getApplicationContext(), Screen_Dashboard.class);
+
+
         img_splash_logo=findViewById(R.id.img_splash_logo);
 
         Intent intent = new Intent(act, NewAppWidget.class);
@@ -65,15 +68,7 @@ public class Screen_Splash extends MasterBaseAppCompatActivity
             @Override
             public void run()
             {
-                if (ph.getBoolean(URLFactory.HIDE_WELCOME_SCREEN)) {
-                    intent = new Intent(Screen_Splash.this, handbook_start.class);
-                } else {
-                    ph.savePreferences(URLFactory.PERSON_WEIGHT_UNIT, true);
-                    ph.savePreferences(URLFactory.PERSON_WEIGHT, "80");
-                    ph.savePreferences(URLFactory.USER_NAME, "");
-                    intent = new Intent(Screen_Splash.this, Screen_OnBoarding.class);
-                }
-
+                intent = new Intent(Screen_Splash.this, Screen_Dashboard.class);
                 startActivity(intent);
                 finish();
             }

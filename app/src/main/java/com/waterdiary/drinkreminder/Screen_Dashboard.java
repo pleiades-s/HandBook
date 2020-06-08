@@ -33,7 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.SwitchCompat;
@@ -56,8 +58,19 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.tbuonomo.viewpagerdotsindicator.DotsIndicator;
 import com.waterdiary.drinkreminder.adapter.ContainerAdapterNew;
 import com.waterdiary.drinkreminder.adapter.MenuAdapter;
@@ -89,25 +102,25 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 {
 	// Header
 	ImageView btn_menu;
-	ImageView btn_alarm;
-	ImageView img_pre,img_next;
-	AppCompatTextView lbl_toolbar_title;
+//	ImageView btn_alarm;
+//	ImageView img_pre,img_next;
+//	AppCompatTextView lbl_toolbar_title;
 
 	DrawerLayout mDrawerLayout;
 	RecyclerView mDrawerList;
 	AppCompatTextView lbl_user_name;
-	LinearLayout btn_rate_us,btn_contact_us;
+//	LinearLayout btn_rate_us,btn_contact_us;
 
 
 	ArrayList<Menu> menu_name=new ArrayList<>();
 	MenuAdapter menuAdapter;
 
-	public static Calendar filter_cal;
-	public static Calendar today_cal;
-	public static Calendar yesterday_cal;
+//	public static Calendar filter_cal;
+//	public static Calendar today_cal;
+//	public static Calendar yesterday_cal;
 
-	List<SoundModel> lst_sounds=new ArrayList<>();
-	SoundAdapter soundAdapter;
+//	List<SoundModel> lst_sounds=new ArrayList<>();
+//	SoundAdapter soundAdapter;
 
 
 	//====================================================
@@ -115,32 +128,32 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 	//====================================================
 
 
-	RelativeLayout add_water;
+//	RelativeLayout add_water;
 
 	ArrayList<Container> containerArrayList=new ArrayList<>();
 	ContainerAdapterNew adapter;
 
 	AppCompatTextView container_name;
-	ImageView img_selected_container;
+//	ImageView img_selected_container;
 	RelativeLayout selected_container_block,open_history;
 
-	float drink_water=0;
-	float old_drink_water=0;
+//	float drink_water=0;
+//	float old_drink_water=0;
 	int selected_pos=0;
 
 	BottomSheetDialog bottomSheetDialog;
 
-    //======================
+	//======================
 
-	AppCompatTextView lbl_total_goal,lbl_total_drunk;
+//	AppCompatTextView lbl_total_goal,lbl_total_drunk;
 
 	//int current_progress=0;
 	//int new_progress=0;
 	Handler handler;
 	Runnable runnable;
 
-	AppCompatTextView lbl_next_reminder;
-	LinearLayout next_reminder_block;
+//	AppCompatTextView lbl_next_reminder;
+//	LinearLayout next_reminder_block;
 
 
 	Handler handlerReminder;
@@ -151,13 +164,13 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 	RelativeLayout content_frame_test;
 	LottieAnimationView animationView;
 
-	int max_bottle_height=870;
-	int progress_bottle_height=0;
+//	int max_bottle_height=870;
+//	int progress_bottle_height=0;
 
 	int cp=0;
 	int np=0;
 
-	Ringtone ringtone;
+//	Ringtone ringtone;
 
 	boolean btnclick=true;
 
@@ -169,10 +182,15 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 
 	LinearLayout banner_view;
 
-	ImageView img_user;
+//	ImageView img_user;
+	ImageView flower_img;
 
 	LinearLayout open_profile;
 
+	FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+	FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+	DatabaseReference databaseReference;
+	String userID;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -193,11 +211,7 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 
 		FindViewById();
 
-		//next_reminder_block.setVisibility(View.INVISIBLE);
-		ringtone = RingtoneManager.getRingtone(mContext, Uri.parse("android.resource://" + mContext.getPackageName() + "/" + R.raw.fill_water_sound));
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-			ringtone.setLooping(false);
-		}
+
 
 		try {
 
@@ -234,6 +248,78 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			e.printStackTrace();
 			//ah.Show_Alert_Dialog(""+e.getMessage());
 		}
+
+		flower_img = (ImageView)findViewById(R.id.flower);
+		// TODO: User ID 가져오기
+		userID = "user1";
+		databaseReference = firebaseDatabase.getReference("UserData/" + userID + "/coin");
+		getFlowerFilePath();
+
+	}
+
+	public String getRank(Integer coin){
+
+		if(coin < 50 && coin > 0){
+			return "step1.png";
+		}
+
+		else if (50 < coin && coin < 100){
+			return "step2.png";
+		}
+
+		else if (coin > 100){
+			return "step3.png";
+		}
+		else{
+			return "";
+		}
+
+	}
+
+	public void getFlowerFilePath(){
+		// TODO: firebase realtime database에서 coin 값 가져오기
+		final ValueEventListener flowerListener = new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				Integer coin = dataSnapshot.getValue(Integer.class);
+				getFlowerImage(getRank(coin));
+
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+
+			}
+		};
+
+		databaseReference.addValueEventListener(flowerListener);
+
+	}
+
+	public void getFlowerImage(String flowerFileName){
+
+
+//		flowerFileName = "step1.png";
+		FirebaseStorage storage  = FirebaseStorage.getInstance();
+		StorageReference storageRef = storage.getReference();
+		StorageReference pathReference = storageRef.child(flowerFileName);
+		// Load the image using Glide
+
+		pathReference.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+			@Override
+			public void onComplete(@NonNull Task<Uri> task) {
+				if (task.isSuccessful()) {
+					// Glide 이용하여 이미지뷰에 로딩
+					Glide.with(getApplicationContext())
+							.load(task.getResult())
+							.into(flower_img);
+				} else {
+					// URL을 가져오지 못하면 토스트 메세지
+					Toast.makeText(getApplicationContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+
 	}
 
 	public void showPermissionDialog()
@@ -308,39 +394,39 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			ah.Show_Alert_Dialog(""+e.getMessage());
 		}
 	}
+	/*
+        public void loadPhoto()
+        {
+            if(sh.check_blank_data(ph.getString(URLFactory.USER_PHOTO))) {
+                Glide.with(act).load(ph.getBoolean(URLFactory.USER_GENDER) ? R.drawable.female_white
+                        : R.drawable.male_white).apply(RequestOptions.circleCropTransform())
+                        .into(img_user);
+            }
+            else
+            {
+                boolean ex=false;
 
-	public void loadPhoto()
-	{
-		if(sh.check_blank_data(ph.getString(URLFactory.USER_PHOTO))) {
-			Glide.with(act).load(ph.getBoolean(URLFactory.USER_GENDER) ? R.drawable.female_white
-					: R.drawable.male_white).apply(RequestOptions.circleCropTransform())
-					.into(img_user);
-		}
-		else
-		{
-			boolean ex=false;
+                try
+                {
+                    File f=new File(ph.getString(URLFactory.USER_PHOTO));
+                    if(f.exists())
+                        ex=true;
+                }
+                catch (Exception e){}
 
-			try
-			{
-				File f=new File(ph.getString(URLFactory.USER_PHOTO));
-				if(f.exists())
-					ex=true;
-			}
-			catch (Exception e){}
-
-			if(ex) {
-				Glide.with(act).load(ph.getString(URLFactory.USER_PHOTO)).apply(RequestOptions.circleCropTransform())
-						.into(img_user);
-			}
-			else
-			{
-				Glide.with(act).load(ph.getBoolean(URLFactory.USER_GENDER) ? R.drawable.female_white
-						: R.drawable.male_white).apply(RequestOptions.circleCropTransform())
-						.into(img_user);
-			}
-		}
-	}
-
+                if(ex) {
+                    Glide.with(act).load(ph.getString(URLFactory.USER_PHOTO)).apply(RequestOptions.circleCropTransform())
+                            .into(img_user);
+                }
+                else
+                {
+                    Glide.with(act).load(ph.getBoolean(URLFactory.USER_GENDER) ? R.drawable.female_white
+                            : R.drawable.male_white).apply(RequestOptions.circleCropTransform())
+                            .into(img_user);
+                }
+            }
+        }
+    */
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -378,46 +464,46 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 
 	public void initMenuScreen()
 	{
-		filter_cal=Calendar.getInstance();
-		today_cal=Calendar.getInstance();
-		yesterday_cal=Calendar.getInstance();
-		yesterday_cal.add(Calendar.DATE,-1);
+
 
 		menuBody();
 
-		lbl_toolbar_title.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				filter_cal.setTimeInMillis(today_cal.getTimeInMillis());
-				lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
-				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
-			}
-		});
+//		lbl_toolbar_title.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				filter_cal.setTimeInMillis(today_cal.getTimeInMillis());
+//				lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
+//				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
+//			}
+//		});
 
-		lbl_user_name.setText(ph.getString(URLFactory.USER_NAME));
+		// TODO: 여기 user 이름 해야 됨
+//		if(user.getDisplayName() != null){
+//			lbl_user_name.setText(user.getDisplayName());
+//		}
+//		else
+			lbl_user_name.setText("Anonymous");
 	}
 
 	public void menuBody()
 	{
 		btn_menu=findViewById(R.id.btn_menu);
-		btn_alarm=findViewById(R.id.btn_alarm);
-		lbl_toolbar_title=findViewById(R.id.lbl_toolbar_title);
-		img_pre=findViewById(R.id.img_pre);
-		img_next=findViewById(R.id.img_next);
+//		btn_alarm=findViewById(R.id.btn_alarm);
+//		lbl_toolbar_title=findViewById(R.id.lbl_toolbar_title);
+//		img_pre=findViewById(R.id.img_pre);
+//		img_next=findViewById(R.id.img_next);
 
-		img_user=findViewById(R.id.img_user);
+		//img_user=findViewById(R.id.img_user);
 		//open_profile=findViewById(R.id.open_profile);
 
-		btn_rate_us=findViewById(R.id.btn_rate_us);
-		btn_contact_us=findViewById(R.id.btn_contact_us);
+//		btn_rate_us=findViewById(R.id.btn_rate_us);
+//		btn_contact_us=findViewById(R.id.btn_contact_us);
 		mDrawerLayout = findViewById(R.id.drawer_layout);
 		mDrawerList = findViewById(R.id.left_drawer);
 		lbl_user_name=findViewById(R.id.lbl_user_name);
 
-		loadPhoto();
-
-		lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
-		lbl_user_name.setText(ph.getString(URLFactory.USER_NAME));
+		//loadPhoto();
+//		lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
 
 
 		menu_name.clear();
@@ -436,7 +522,7 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			public void onClickSelect(Menu menu, int position) {
 				mDrawerLayout.closeDrawer(Gravity.LEFT);
 
-               if(position==1)
+				if(position==1)
 				{
 					intent=new Intent(act,handbook_notifisettings.class);
 					startActivity(intent);
@@ -476,32 +562,32 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			}
 		});
 
-		btn_rate_us.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				String appPackageName = getPackageName();
-				try
-				{
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-				} catch (android.content.ActivityNotFoundException anfe) {
-					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
-				}
-			}
-		});
+//		btn_rate_us.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				String appPackageName = getPackageName();
+//				try
+//				{
+//					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+//				} catch (android.content.ActivityNotFoundException anfe) {
+//					startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+//				}
+//			}
+//		});
 
-		btn_contact_us.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				try
-				{
-					Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "youremail@gmail.com"));
-					intent.putExtra(Intent.EXTRA_SUBJECT, "");
-					intent.putExtra(Intent.EXTRA_TEXT, "");
-					startActivity(intent);
-				}
-				catch (Exception ex){}
-			}
-		});
+//		btn_contact_us.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				try
+//				{
+//					Intent intent = new Intent (Intent.ACTION_VIEW , Uri.parse("mailto:" + "youremail@gmail.com"));
+//					intent.putExtra(Intent.EXTRA_SUBJECT, "");
+//					intent.putExtra(Intent.EXTRA_TEXT, "");
+//					startActivity(intent);
+//				}
+//				catch (Exception ex){}
+//			}
+//		});
 
 		mDrawerList.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
@@ -523,12 +609,12 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			}
 		});*/
 
-		btn_alarm.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				showReminderDialog();
-			}
-		});
+//		btn_alarm.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View view) {
+//				showReminderDialog();
+//			}
+//		});
 
 		btn_menu.setOnClickListener(new View.OnClickListener()
 		{
@@ -546,42 +632,42 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 		});
 
 
-		img_pre.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v)
-			{
-				filter_cal.add(Calendar.DATE,-1);
+//		img_pre.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v)
+//			{
+//				filter_cal.add(Calendar.DATE,-1);
+//
+//				if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(yesterday_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
+//					lbl_toolbar_title.setText(sh.get_string(R.string.str_yesterday));
+//				else
+//					lbl_toolbar_title.setText(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
+//
+//				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
+//			}
+//		});
 
-				if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(yesterday_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
-					lbl_toolbar_title.setText(sh.get_string(R.string.str_yesterday));
-				else
-					lbl_toolbar_title.setText(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
-
-				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
-			}
-		});
-
-		img_next.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				filter_cal.add(Calendar.DATE,1);
-
-				if(filter_cal.getTimeInMillis()>today_cal.getTimeInMillis()) {
-					filter_cal.add(Calendar.DATE, -1);
-					return;
-				}
-
-				if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(today_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
-					lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
-				else if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(yesterday_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
-					lbl_toolbar_title.setText(sh.get_string(R.string.str_yesterday));
-				else
-					lbl_toolbar_title.setText(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
-
-				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
-
-			}
-		});
+//		img_next.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				filter_cal.add(Calendar.DATE,1);
+//
+//				if(filter_cal.getTimeInMillis()>today_cal.getTimeInMillis()) {
+//					filter_cal.add(Calendar.DATE, -1);
+//					return;
+//				}
+//
+//				if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(today_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
+//					lbl_toolbar_title.setText(sh.get_string(R.string.str_today));
+//				else if(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT).equalsIgnoreCase(dth.getDate(yesterday_cal.getTimeInMillis(),URLFactory.DATE_FORMAT)))
+//					lbl_toolbar_title.setText(sh.get_string(R.string.str_yesterday));
+//				else
+//					lbl_toolbar_title.setText(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
+//
+//				//setCustomDate(dth.getDate(filter_cal.getTimeInMillis(),URLFactory.DATE_FORMAT));
+//
+//			}
+//		});
 
 	}
 /*
@@ -816,46 +902,46 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 	private void FindViewById()
 	{
 		animationView=findViewById(R.id.animationView);
-		content_frame=findViewById(R.id.content_frame);
-		content_frame_test=findViewById(R.id.content_frame_test);
+//		content_frame=findViewById(R.id.content_frame);
+//		content_frame_test=findViewById(R.id.content_frame_test);
 
-		content_frame.getViewTreeObserver()
-				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//		content_frame.getViewTreeObserver()
+//				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//					@Override
+//					public void onGlobalLayout() {
+//						// TODO Auto-generated method stub
+//						int w = content_frame.getWidth();
+//						int h = content_frame.getHeight();
+//						Log.v("getWidthHeight", w+"   -   "+h);
+//					}
+//				});
+//
+//		content_frame_test.getViewTreeObserver()
+//				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//
+//					@Override
+//					public void onGlobalLayout() {
+//						// TODO Auto-generated method stub
+//						int w = content_frame_test.getWidth();
+//						int h = content_frame_test.getHeight();
+//						Log.v("getWidthHeight test", w+"   -   "+h);
+//						max_bottle_height=h-30;
+//					}
+//				});
 
-					@Override
-					public void onGlobalLayout() {
-						// TODO Auto-generated method stub
-						int w = content_frame.getWidth();
-						int h = content_frame.getHeight();
-						Log.v("getWidthHeight", w+"   -   "+h);
-					}
-				});
+//		lbl_next_reminder=findViewById(R.id.lbl_next_reminder);
+//		next_reminder_block=findViewById(R.id.next_reminder_block);
 
-		content_frame_test.getViewTreeObserver()
-				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//		add_water=findViewById(R.id.add_water);
 
-					@Override
-					public void onGlobalLayout() {
-						// TODO Auto-generated method stub
-						int w = content_frame_test.getWidth();
-						int h = content_frame_test.getHeight();
-						Log.v("getWidthHeight test", w+"   -   "+h);
-						max_bottle_height=h-30;
-					}
-				});
-
-		lbl_next_reminder=findViewById(R.id.lbl_next_reminder);
-		next_reminder_block=findViewById(R.id.next_reminder_block);
-
-		add_water=findViewById(R.id.add_water);
-
-		container_name=findViewById(R.id.container_name);
-		img_selected_container=findViewById(R.id.img_selected_container);
-		selected_container_block=findViewById(R.id.selected_container_block);
+//		container_name=findViewById(R.id.container_name);
+//		img_selected_container=findViewById(R.id.img_selected_container);
+//		selected_container_block=findViewById(R.id.selected_container_block);
 		open_history=findViewById(R.id.open_history);
 
-		lbl_total_goal=findViewById(R.id.lbl_total_goal);
-		lbl_total_drunk=findViewById(R.id.lbl_total_drunk);
+//		lbl_total_goal=findViewById(R.id.lbl_total_goal);
+//		lbl_total_drunk=findViewById(R.id.lbl_total_drunk);
 
 		banner_view=findViewById(R.id.banner_view);
 
@@ -863,30 +949,30 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 
 	private void Body()
 	{
-		ArrayList<HashMap<String, String>>  arr_data=dh.getdata("tbl_drink_details","DrinkDate ='"+dth.getCurrentDate(URLFactory.DATE_FORMAT)+"'");
-		old_drink_water=0;
-		for(int k=0;k<arr_data.size();k++)
-		{
-			//ah.Show_Alert_Dialog(""+arr_data.get(k).get("ContainerValue")+"\n\n"+arr_data.get(k).get("ContainerValueOZ")+"\n\n"+Double.parseDouble(""+arr_data.get(k).get("ContainerValueOZ")));
-
-			if(URLFactory.WATER_UNIT_VALUE.equalsIgnoreCase("ml"))
-				old_drink_water+=Double.parseDouble(""+arr_data.get(k).get("ContainerValue"));
-			else
-				old_drink_water+=Double.parseDouble(""+arr_data.get(k).get("ContainerValueOZ"));
-
-			//ah.Show_Alert_Dialog(""+arr_data.get(k).get("ContainerValueOZ"));
-		}
+//		ArrayList<HashMap<String, String>>  arr_data=dh.getdata("tbl_drink_details","DrinkDate ='"+dth.getCurrentDate(URLFactory.DATE_FORMAT)+"'");
+//		old_drink_water=0;
+//		for(int k=0;k<arr_data.size();k++)
+//		{
+//			//ah.Show_Alert_Dialog(""+arr_data.get(k).get("ContainerValue")+"\n\n"+arr_data.get(k).get("ContainerValueOZ")+"\n\n"+Double.parseDouble(""+arr_data.get(k).get("ContainerValueOZ")));
+//
+//			if(URLFactory.WATER_UNIT_VALUE.equalsIgnoreCase("ml"))
+//				old_drink_water+=Double.parseDouble(""+arr_data.get(k).get("ContainerValue"));
+//			else
+//				old_drink_water+=Double.parseDouble(""+arr_data.get(k).get("ContainerValueOZ"));
+//
+//			//ah.Show_Alert_Dialog(""+arr_data.get(k).get("ContainerValueOZ"));
+//		}
 
 		//count_today_drink(false);
 
-		selected_container_block.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				//openChangeContainerPicker();
-				intent=new Intent(act,Screen_Dashboard.class);
-				startActivity(intent);
-			}
-		});
+//		selected_container_block.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View view) {
+//				//openChangeContainerPicker();
+//				intent=new Intent(act,Screen_Dashboard.class);
+//				startActivity(intent);
+//			}
+//		});
 
 		open_history.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -899,14 +985,14 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			}
 		});
 
-		img_selected_container.setVisibility(View.INVISIBLE);
-		add_water.setVisibility(View.INVISIBLE);
-		next_reminder_block.setVisibility(View.INVISIBLE);
-		lbl_next_reminder.setVisibility(View.INVISIBLE);
-		LinearLayout goal = findViewById(R.id.goal);
-		goal.setVisibility(View.INVISIBLE);
-		LinearLayout consumed = findViewById(R.id.consumed);
-		consumed.setVisibility(View.INVISIBLE);
+//		img_selected_container.setVisibility(View.INVISIBLE);
+//		add_water.setVisibility(View.INVISIBLE);
+//		next_reminder_block.setVisibility(View.INVISIBLE);
+//		lbl_next_reminder.setVisibility(View.INVISIBLE);
+//		LinearLayout goal = findViewById(R.id.goal);
+//		goal.setVisibility(View.INVISIBLE);
+//		LinearLayout consumed = findViewById(R.id.consumed);
+//		consumed.setVisibility(View.INVISIBLE);
 		/*add_water.setOnClickListener(new View.OnClickListener()
         {
 			@Override
@@ -1206,8 +1292,8 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 */
 			/*else
 				calculateAllDrink();*/
-		}
-		
+	}
+
 		/*else
 			calculateAllDrink();*/
 /*
@@ -1229,82 +1315,82 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 		/*if(np>max_bottle_height)
 			np=max_bottle_height;*/
 
-/*		if(cp<=np && isFromCurrentProgress)
-		{
-			animationView.setVisibility(View.VISIBLE);
-			runnable = new Runnable() {
-				@Override
-				public void run() {
+	/*		if(cp<=np && isFromCurrentProgress)
+            {
+                animationView.setVisibility(View.VISIBLE);
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
 
-					if(cp>max_bottle_height) {
-						btnclick = true;
-						callDialog();
-					}
-					else if(cp<np) {
-						cp+=6;
-						content_frame.getLayoutParams().height = cp;
-						content_frame.requestLayout();
-						handler.postDelayed(runnable, animationDuration);
-					}
-					else
-					{
-						btnclick=true;
-						callDialog();
-					}
-				}
-			};
-			handler = new Handler();
-			handler.postDelayed(runnable, animationDuration);
-		}
-		else if(np==0)
-		{
-			animationView.setVisibility(View.GONE);
-			content_frame.getLayoutParams().height = np;
-			content_frame.requestLayout();
-			btnclick=true;
-			//ah.customAlert("-->else if");
-			callDialog();
-		}
-		else
-		{
-			content_frame.getLayoutParams().height = 0;
-			cp=0;
-			animationView.setVisibility(View.VISIBLE);
-			runnable = new Runnable() {
-				@Override
-				public void run() {
+                        if(cp>max_bottle_height) {
+                            btnclick = true;
+                            callDialog();
+                        }
+                        else if(cp<np) {
+                            cp+=6;
+                            content_frame.getLayoutParams().height = cp;
+                            content_frame.requestLayout();
+                            handler.postDelayed(runnable, animationDuration);
+                        }
+                        else
+                        {
+                            btnclick=true;
+                            callDialog();
+                        }
+                    }
+                };
+                handler = new Handler();
+                handler.postDelayed(runnable, animationDuration);
+            }
+            else if(np==0)
+            {
+                animationView.setVisibility(View.GONE);
+                content_frame.getLayoutParams().height = np;
+                content_frame.requestLayout();
+                btnclick=true;
+                //ah.customAlert("-->else if");
+                callDialog();
+            }
+            else
+            {
+                content_frame.getLayoutParams().height = 0;
+                cp=0;
+                animationView.setVisibility(View.VISIBLE);
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
 
-					if(cp>max_bottle_height) {
-						btnclick = true;
-						callDialog();
-					}
-					else if(cp<np) {
-						cp+=6;
-						content_frame.getLayoutParams().height = cp;
-						content_frame.requestLayout();
-						handler.postDelayed(runnable, animationDuration);
-					}
-					else
-					{
-						//ah.customAlert("-->else else");
-						btnclick=true;
-						callDialog();
-					}
+                        if(cp>max_bottle_height) {
+                            btnclick = true;
+                            callDialog();
+                        }
+                        else if(cp<np) {
+                            cp+=6;
+                            content_frame.getLayoutParams().height = cp;
+                            content_frame.requestLayout();
+                            handler.postDelayed(runnable, animationDuration);
+                        }
+                        else
+                        {
+                            //ah.customAlert("-->else else");
+                            btnclick=true;
+                            callDialog();
+                        }
 
-				}
-			};
-			handler = new Handler();
-			handler.postDelayed(runnable, animationDuration);
-		}
+                    }
+                };
+                handler = new Handler();
+                handler.postDelayed(runnable, animationDuration);
+            }
 
-		progress_bottle_height=np;
+            progress_bottle_height=np;
 
-		if(np>0)
-			animationView.setVisibility(View.VISIBLE);
-		else
-			animationView.setVisibility(View.GONE);
-	}
-*/
+            if(np>0)
+                animationView.setVisibility(View.VISIBLE);
+            else
+                animationView.setVisibility(View.GONE);
+        }
+    */
 /*	public void count_specific_day_drink(String custom_date)
 	{
 		ArrayList<HashMap<String, String>>  arr_dataO=dh.getdata("tbl_drink_details","DrinkDate ='"+custom_date+"'");
@@ -1495,7 +1581,7 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 							+"\n\n"+Math.round(tml)+" @@@ "+Math.round(tfloz));*/
 
 
-					//dh.TOTAL_ROW("tbl_container_details","ContainerValue="+)
+	//dh.TOTAL_ROW("tbl_container_details","ContainerValue="+)
 
 /*
 					Cursor c = Constant.SDB.rawQuery("SELECT MAX(ContainerID) FROM tbl_container_details", null);
@@ -1670,23 +1756,23 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			}
 		});
 
-		btn_share.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				dialog.dismiss();
-
-				final String appPackageName = mContext.getPackageName();
-
-				String share_text=sh.get_string(R.string.str_share_text)
-						.replace("$1",""+(int)(drink_water)+" "+URLFactory.WATER_UNIT_VALUE);
-
-				//share_text=share_text.replace("$2","@ https://play.google.com/store/apps/details?id=" + appPackageName);
-
-				share_text=share_text.replace("$2","@ "+URLFactory.APP_SHARE_URL);
-
-				ih.ShareText(getApplicationName(mContext),share_text);
-			}
-		});
+//		btn_share.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				dialog.dismiss();
+//
+//				final String appPackageName = mContext.getPackageName();
+//
+////				String share_text=sh.get_string(R.string.str_share_text)
+////						.replace("$1",""+(int)(drink_water)+" "+URLFactory.WATER_UNIT_VALUE);
+//
+//				//share_text=share_text.replace("$2","@ https://play.google.com/store/apps/details?id=" + appPackageName);
+//
+//				share_text=share_text.replace("$2","@ "+URLFactory.APP_SHARE_URL);
+//
+//				ih.ShareText(getApplicationName(mContext),share_text);
+//			}
+//		});
 
 		dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
 			@Override
@@ -1903,7 +1989,7 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 
 	public void openSoundMenuPicker()
 	{
-		loadSounds();
+//		loadSounds();
 
 		final Dialog dialog = new Dialog(act);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -1926,72 +2012,72 @@ public class Screen_Dashboard extends MasterBaseAppCompatActivity
 			}
 		});
 
-		btn_save.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-
-				for(int k=0;k<lst_sounds.size();k++)
-				{
-					if(lst_sounds.get(k).isSelected()) {
-						ph.savePreferences(URLFactory.REMINDER_SOUND, k);
-						break;
-					}
-
-				}
-
-				//ph.savePreferences(URLFactory.REMINDER_SOUND,position);
-
-				dialog.dismiss();
-			}
-		});
-
+//		btn_save.setOnClickListener(new View.OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//
+//				for(int k=0;k<lst_sounds.size();k++)
+//				{
+//					if(lst_sounds.get(k).isSelected()) {
+//						ph.savePreferences(URLFactory.REMINDER_SOUND, k);
+//						break;
+//					}
+//
+//				}
+//
+//				//ph.savePreferences(URLFactory.REMINDER_SOUND,position);
+//
+//				dialog.dismiss();
+//			}
+//		});
+//
 
 		RecyclerView soundRecyclerView=view.findViewById(R.id.soundRecyclerView);
 
-		soundAdapter = new SoundAdapter(act, lst_sounds, new SoundAdapter.CallBack() {
-			@Override
-			public void onClickSelect(SoundModel time, int position)
-			{
-				for(int k=0;k<lst_sounds.size();k++)
-				{
-					lst_sounds.get(k).isSelected(false);
-				}
+//		soundAdapter = new SoundAdapter(act, lst_sounds, new SoundAdapter.CallBack() {
+//			@Override
+//			public void onClickSelect(SoundModel time, int position)
+//			{
+//				for(int k=0;k<lst_sounds.size();k++)
+//				{
+//					lst_sounds.get(k).isSelected(false);
+//				}
+//
+//				lst_sounds.get(position).isSelected(true);
+//				soundAdapter.notifyDataSetChanged();
+//
+//
+//
+//				//if(position>0)
+//				playSound(position);
+//			}
+//		});
 
-				lst_sounds.get(position).isSelected(true);
-				soundAdapter.notifyDataSetChanged();
-
-
-
-				//if(position>0)
-				playSound(position);
-			}
-		});
-
-		soundRecyclerView.setLayoutManager(new LinearLayoutManager(act, LinearLayoutManager.VERTICAL, false));
-
-		soundRecyclerView.setAdapter(soundAdapter);
+//		soundRecyclerView.setLayoutManager(new LinearLayoutManager(act, LinearLayoutManager.VERTICAL, false));
+//
+//		soundRecyclerView.setAdapter(soundAdapter);
 
 		dialog.setContentView(view);
 
 		dialog.show();
 	}
 
-	public void loadSounds()
-	{
-		lst_sounds.clear();
-
-		lst_sounds.add(getSoundModel(0,"Default"));
-		lst_sounds.add(getSoundModel(1,"Bell"));
-		lst_sounds.add(getSoundModel(2,"Blop"));
-		lst_sounds.add(getSoundModel(3,"Bong"));
-		lst_sounds.add(getSoundModel(4,"Click"));
-		lst_sounds.add(getSoundModel(5,"Echo droplet"));
-		lst_sounds.add(getSoundModel(6,"Mario droplet"));
-		lst_sounds.add(getSoundModel(7,"Ship bell"));
-		lst_sounds.add(getSoundModel(8,"Simple droplet"));
-		lst_sounds.add(getSoundModel(9,"Tiny droplet"));
-
-	}
+//	public void loadSounds()
+//	{
+//		lst_sounds.clear();
+//
+//		lst_sounds.add(getSoundModel(0,"Default"));
+//		lst_sounds.add(getSoundModel(1,"Bell"));
+//		lst_sounds.add(getSoundModel(2,"Blop"));
+//		lst_sounds.add(getSoundModel(3,"Bong"));
+//		lst_sounds.add(getSoundModel(4,"Click"));
+//		lst_sounds.add(getSoundModel(5,"Echo droplet"));
+//		lst_sounds.add(getSoundModel(6,"Mario droplet"));
+//		lst_sounds.add(getSoundModel(7,"Ship bell"));
+//		lst_sounds.add(getSoundModel(8,"Simple droplet"));
+//		lst_sounds.add(getSoundModel(9,"Tiny droplet"));
+//
+//	}
 
 	public SoundModel getSoundModel(int index,String name)
 	{

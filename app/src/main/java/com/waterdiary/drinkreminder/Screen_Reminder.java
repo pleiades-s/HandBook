@@ -129,7 +129,7 @@ public class Screen_Reminder extends MasterBaseActivity
 
     private void FindViewById()
     {
-        right_icon_block=findViewById(id.right_icon_block);
+//        right_icon_block=findViewById(id.right_icon_block);
         left_icon_block=findViewById(id.left_icon_block);
 
         alarmRecyclerView=findViewById(R.id.alarmRecyclerView);
@@ -412,13 +412,13 @@ public class Screen_Reminder extends MasterBaseActivity
                 finish();
             }
         });
-        right_icon_block.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //openMenuPicker();
-                showMenu(view);
-            }
-        });
+//        right_icon_block.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                //openMenuPicker();
+//                showMenu(view);
+//            }
+//        });
 
         load_alarm();
 

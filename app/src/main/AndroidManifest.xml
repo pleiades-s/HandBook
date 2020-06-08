@@ -3,14 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.waterdiary.drinkreminder">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
-
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
@@ -19,10 +11,50 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:allowBackup"
         android:usesCleartextTraffic="true"
-        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
+        tools:ignore="GoogleAppIndexingWarning,UnusedAttribute"
+        tools:replace="android:allowBackup">
+        <activity
+            android:name=".Screen_Splash"
+            android:theme="@style/AppThemeSplash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".handbook_start" />
+
+        <activity android:name=".handbook_login" />
+        <activity android:name=".handbook_createAccount" />
+        <activity android:name=".handbook_healthtips" />
+        <activity android:name=".handbook_store" />
+        <activity android:name=".handbook_stretching" />
+        <activity android:name=".Screen_Dashboard" />
+        <activity
+            android:name=".Screen_OnBoarding"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity android:name=".Screen_History" />
+        <activity android:name=".Screen_Settings" />
+        <activity android:name=".Screen_Report" />
+        <activity android:name=".Screen_Reminder" />
+        <activity android:name=".handbook_notifisettings" />
+        <activity android:name=".Screen_FAQ" />
+        <activity android:name=".Screen_Backup_Restore" />
+        <activity android:name=".Screen_Profile" />
+        <activity
+            android:name=".Screen_Select_Bottle"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name=".Screen_Select_Snooze"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/AppThemeCROP" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -33,58 +65,8 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity
-            android:name="com.waterdiary.drinkreminder.Screen_Splash"
-            android:theme="@style/AppThemeSplash">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-
-
-        <activity android:name="com.waterdiary.drinkreminder.handbook_start" />
-        <activity android:name="com.waterdiary.drinkreminder.handbook_login" />
-
-        <activity android:name="com.waterdiary.drinkreminder.handbook_createAccount" />
-        <activity android:name="com.waterdiary.drinkreminder.handbook_healthtips" />
-        <activity android:name="com.waterdiary.drinkreminder.handbook_store" />
-        <activity android:name="com.waterdiary.drinkreminder.handbook_stretching" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Dashboard" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_OnBoarding"
-            android:windowSoftInputMode="adjustNothing"/>
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_History" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Settings" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Report" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Reminder" />
-
-        <activity android:name="com.waterdiary.drinkreminder.handbook_notifisettings"  />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_FAQ" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Backup_Restore" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Profile" />
-
-
-
-
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Select_Bottle" android:theme="@style/Theme.Transparent" />
-
-        <activity android:name="com.waterdiary.drinkreminder.Screen_Select_Snooze" android:theme="@style/Theme.Transparent" />
-
-
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/AppThemeCROP"/>
-
-        <receiver android:name="com.waterdiary.drinkreminder.receiver.AlarmReceiver"
+        <receiver
+            android:name=".receiver.AlarmReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -92,9 +74,8 @@
                 <action android:name="com.test.intent.action.ALARM" />
             </intent-filter>
         </receiver>
-
-
-        <receiver android:name="com.waterdiary.drinkreminder.receiver.BackupReceiver"
+        <receiver
+            android:name=".receiver.BackupReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -102,8 +83,7 @@
                 <action android:name="com.test.intent.action.ALARM" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name="com.waterdiary.drinkreminder.mywidgets.NewAppWidget">
+        <receiver android:name=".mywidgets.NewAppWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -113,10 +93,20 @@
                 android:resource="@xml/new_app_widget_info" />
         </receiver>
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
+        <service
+            android:name=".MyFirebaseMessgingService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
 </manifest>

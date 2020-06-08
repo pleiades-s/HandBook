@@ -21,64 +21,7 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/dp_20"/>
 
-        <RadioGroup
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginStart="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_marginBottom="@dimen/dp_5">
 
-            <RadioButton
-                android:id="@+id/rdo_week"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:checked="true"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:button="@null"
-                android:background="@drawable/rdo_back_reminder"
-                android:text="@string/str_week"
-                android:textSize="@dimen/dp_12"
-                android:textColor="@drawable/rdo_back_reminder"
-                android:fontFamily="@font/calibri_regular"/>
-
-            <RadioButton
-                android:id="@+id/rdo_month"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:checked="false"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:button="@null"
-                android:background="@drawable/rdo_back_reminder"
-                android:text="@string/str_month"
-                android:textSize="@dimen/dp_12"
-                android:textColor="@drawable/rdo_back_reminder"
-                android:fontFamily="@font/calibri_regular"/>
-
-            <RadioButton
-                android:id="@+id/rdo_year"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
-                android:checked="false"
-                android:gravity="center"
-                android:layout_weight="1"
-                android:button="@null"
-                android:background="@drawable/rdo_back_reminder"
-                android:text="@string/str_year"
-                android:textSize="@dimen/dp_12"
-                android:textColor="@drawable/rdo_back_reminder"
-                android:fontFamily="@font/calibri_regular"/>
-
-        </RadioGroup>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"
@@ -94,15 +37,14 @@
 
         </com.google.android.material.tabs.TabLayout>
 
-       <!-- <androidx.viewpager.widget.ViewPager-->
-        <com.waterdiary.drinkreminder.custom.NonSwipeableViewPager
-            android:id="@+id/viewPager"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/barchart"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@drawable/drawable_rounded_screen_background">
+        </com.github.mikephil.charting.charts.BarChart>
 
-        </com.waterdiary.drinkreminder.custom.NonSwipeableViewPager>
 
     </LinearLayout>
 

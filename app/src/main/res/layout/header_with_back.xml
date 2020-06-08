@@ -38,26 +38,11 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/lbl_toolbar_title"
                     style="@style/toolbar_main_title"
-                    android:text="@string/str_reminder" />
+                    android:text="History" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/right_icon_block"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/dp_3"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true">
 
-                <ImageView
-                    android:id="@+id/btn_save"
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:src="@drawable/ic_dot"
-                    android:tint="@color/rdo_gender_select"/>
-
-            </LinearLayout>
 
         </RelativeLayout>
 

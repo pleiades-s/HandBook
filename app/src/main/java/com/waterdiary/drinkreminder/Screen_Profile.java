@@ -222,7 +222,7 @@ public class Screen_Profile extends MasterBaseAppCompatActivity
 
     public  void FindViewById()
     {
-        right_icon_block=findViewById(R.id.right_icon_block);
+//        right_icon_block=findViewById(R.id.right_icon_block);
         left_icon_block=findViewById(R.id.left_icon_block);
         lbl_toolbar_title=findViewById(R.id.lbl_toolbar_title);
 
@@ -367,7 +367,7 @@ public class Screen_Profile extends MasterBaseAppCompatActivity
             }
         });
 
-        right_icon_block.setVisibility(View.GONE);
+//        right_icon_block.setVisibility(View.GONE);
     }
 
     public void Body()

@@ -41,7 +41,7 @@ public class Screen_Settings extends MasterBaseActivity
 
 	private void FindViewById()
 	{
-		right_icon_block=findViewById(R.id.right_icon_block);
+//		right_icon_block=findViewById(R.id.right_icon_block);
 		left_icon_block=findViewById(R.id.left_icon_block);
 		lbl_toolbar_title=findViewById(R.id.lbl_toolbar_title);
 
@@ -64,7 +64,7 @@ public class Screen_Settings extends MasterBaseActivity
 				finish();
 			}
 		});
-		right_icon_block.setVisibility(View.GONE);
+//		right_icon_block.setVisibility(View.GONE);
 
 		backup_restore_block.setOnClickListener(new View.OnClickListener() {
 			@Override

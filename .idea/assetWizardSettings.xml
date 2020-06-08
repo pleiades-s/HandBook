@@ -51,7 +51,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="scalingPercent" value="60" />
+                                                <entry key="scalingPercent" value="80" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -63,7 +63,7 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundImage" value="C:\Users\jigar.shah\Desktop\splash-logo - Copy.png" />
+                                      <entry key="foregroundImage" value="C:\Users\rudob\Desktop\GCD 개발\handbook-icon.png" />
                                     </map>
                                   </option>
                                 </PersistentState>

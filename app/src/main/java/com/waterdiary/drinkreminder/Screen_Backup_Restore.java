@@ -102,7 +102,7 @@ public class Screen_Backup_Restore extends MasterBaseActivity
 
     private void FindViewById()
     {
-        right_icon_block=findViewById(id.right_icon_block);
+//        right_icon_block=findViewById(id.right_icon_block);
         left_icon_block=findViewById(id.left_icon_block);
         lbl_toolbar_title=findViewById(id.lbl_toolbar_title);
 

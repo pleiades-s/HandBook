@@ -14,7 +14,7 @@
         android:layout_height="@dimen/dp_180"
         android:layout_centerInParent="true"
         android:adjustViewBounds="true"
-        android:src="@drawable/ic_splash_logo_with_drops"
+        android:src="@drawable/splash_img"
         />
 
     <LinearLayout

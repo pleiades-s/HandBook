@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "182112508936-r665rf4q3lnirpinjqluonfmq3208uai.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waterdiary.drinkreminder",
+            "certificate_hash": "a8a791b965bc241a00c727a0d472d478340b2d6b"
+          }
+        },
+        {
+          "client_id": "182112508936-ebl3bjnkjpvrrpcrqakd2ng89f5bnm5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waterdiary.drinkreminder",
+            "certificate_hash": "d9e7ead11538e34a46805a6faa823362ff98f54a"
+          }
+        },
+        {
           "client_id": "182112508936-mc7s1aaq57k9ee25rcqfpal7i5avfk76.apps.googleusercontent.com",
           "client_type": 3
         }
